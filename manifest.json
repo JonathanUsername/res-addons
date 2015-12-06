@@ -1,0 +1,10 @@
+{
+  "name": "RES Addons",
+  "manifest_version": 2,
+  "version": "1.1",
+  "content_scripts": [{
+    "matches": [ "*://*.reddit.com/*" ],
+    "js": [ "jquery.min.js", "content.js" ]
+  }],
+  "permissions": [ "<all_urls>" ]
+}
