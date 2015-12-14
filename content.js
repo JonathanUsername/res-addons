@@ -10,23 +10,16 @@ function showComments(cm) {
     $.get(url)
         .done(function(d) {
             var children = d[1].data.children
-            if (typeof d !== "object" || children.length === 0)
-                return removeComments(cm)
+            if (typeof d !== "object" || children.length === 0) return removeComments(cm)
             var comments_arr = children.map(function(i) {
                 var html_chunk = i.data.body_html
                 return html_chunk
             })
-            var html = htmlDecode(comments_arr[0])
-            if (comments_arr.length > 1) {
-            	html = comments_arr.reduce(function(p, c, i) {
-            		if (i > 0)
-		                return p + containing_div + htmlDecode(c)
-		            else
-		            	return ''
-	            })
-	        }
+        	var html = comments_arr.reduce(function(p, c, i) {
+	            return p + htmlDecode(c) + containing_div
+            }, '') // Needs empty string to work with single element arrays
             $('#commentsWindow' + window.frameCounter).html(html)
-            resCommentsLoading(cm, false)
+            resCommentsLoading(false)
         })
         .fail(function(e) {
             removeComments(cm)
@@ -41,10 +34,9 @@ function htmlDecode(input) {
 
 function removeComments(cm) {
     if (!commentsExist(cm)) return false
-    resCommentsLoading(true)
     $('#commentsWindow' + window.frameCounter).remove()
     window.frameCounter--
-        resCommentsLoading(false)
+    resCommentsLoading(false)
 }
 
 function commentsExist(cm) {
