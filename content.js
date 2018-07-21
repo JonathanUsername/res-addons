@@ -18,12 +18,12 @@ function showComments(cm) {
       if (typeof d !== "object" || children.length === 0)
         return removeComments(cm);
       var comments_arr = children.map(
-        ({ data: { body_html, permalink, gilded } }) => {
+        ({ data: { body_html, permalink, gilded, replies } }) => {
           return `<div style="position:relative;border-top:1px solid black;width:100%;${
             gilded > 0 ? "background-color: gold;" : ""
-          }"><a style="top:0;right:0;position:absolute;" href="${permalink}">🔗</a> ${htmlDecode(
-            body_html
-          )}</div>`;
+          }"><a target="_blank" style="top:0;right:0;position:absolute;" href="${permalink}">🔗${getReplyNumber(
+            replies
+          )}</a> ${htmlDecode(body_html)}</div>`;
         }
       );
       var html = comments_arr.join("");
@@ -33,6 +33,13 @@ function showComments(cm) {
     .fail(function(e) {
       removeComments(cm);
     });
+}
+
+function getReplyNumber(replies) {
+  if (replies && replies.data && replies.data.children) {
+    return replies.data.children.length;
+  }
+  return 0;
 }
 
 function htmlDecode(input) {
